@@ -1,6 +1,6 @@
 # Tracify
 
-**Tracify (VASPTRACE)** is a blockchain investigation and financial intelligence platform that turns fragmented on-chain data into traceable, investigation-ready intelligence for analysts and compliance teams.
+**Tracify** is a blockchain investigation and financial intelligence platform that turns fragmented on-chain data into traceable, investigation-ready intelligence for analysts and compliance teams.
 
 ## Features
 
