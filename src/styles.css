@@ -1,0 +1,489 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * TRACIFY design system — Obsidian Signal (dark-only).
+ * Deep charcoal slate base, cyan signal accents, soft violet intel highlights.
+ * Clay panels with crisp elevation and readable muted text.
+ */
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 6px);
+  --radius-md: calc(var(--radius) - 3px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 6px);
+  --radius-2xl: calc(var(--radius) + 12px);
+
+  --font-sans:
+    Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-workspace: var(--workspace);
+  --color-surface: var(--surface);
+  --color-surface-foreground: var(--foreground);
+  --color-elevated: var(--elevated);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-intel: var(--intel);
+  --color-intel-foreground: var(--intel-foreground);
+  --color-teal: var(--teal);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-critical: var(--critical);
+  --color-critical-foreground: var(--critical-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-positive: var(--positive);
+  --color-positive-foreground: var(--positive-foreground);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-chart-1: var(--primary);
+  --color-chart-2: var(--intel);
+  --color-chart-3: var(--teal);
+  --color-chart-4: var(--warning);
+  --color-chart-5: var(--critical);
+
+  --shadow-clay:
+    0 20px 44px -20px oklch(0 0 0 / 0.82), 0 1px 0 0 oklch(1 0 0 / 0.06) inset,
+    0 -12px 20px -16px oklch(0 0 0 / 0.55) inset;
+  --shadow-clay-lift:
+    0 32px 64px -24px oklch(0 0 0 / 0.88), 0 1px 0 0 oklch(1 0 0 / 0.08) inset;
+  --shadow-float: 0 36px 72px -28px oklch(0 0 0 / 0.92);
+  --shadow-focus: 0 0 0 1px var(--primary), 0 0 28px -4px var(--primary-glow);
+
+  --spacing-rail: 84px;
+  --spacing-sidebar: 268px;
+  --spacing-topbar: 76px;
+}
+
+:root {
+  --radius: 1rem;
+
+  /* Surfaces — layered charcoal slate */
+  --background: oklch(0.118 0.014 248);
+  --workspace: oklch(0.142 0.016 247);
+  --surface: oklch(0.168 0.018 246);
+  --elevated: oklch(0.198 0.02 245);
+
+  --foreground: oklch(0.94 0.008 248);
+  --muted: oklch(0.168 0.018 246);
+  --muted-foreground: oklch(0.64 0.02 248);
+
+  --card: oklch(0.168 0.018 246);
+  --card-foreground: oklch(0.94 0.008 248);
+  --popover: oklch(0.198 0.02 245);
+  --popover-foreground: oklch(0.94 0.008 248);
+
+  /* Signal cyan — primary action & trace highlights */
+  --primary: oklch(0.72 0.145 200);
+  --primary-foreground: oklch(0.13 0.02 200);
+  --primary-glow: oklch(0.72 0.145 200 / 0.5);
+
+  /* Intel violet — AI / attribution context */
+  --intel: oklch(0.62 0.14 278);
+  --intel-foreground: oklch(0.97 0.008 278);
+  --teal: oklch(0.76 0.11 175);
+
+  --secondary: oklch(0.198 0.02 245);
+  --secondary-foreground: oklch(0.94 0.008 248);
+  --accent: oklch(0.22 0.022 244);
+  --accent-foreground: oklch(0.94 0.008 248);
+
+  --critical: oklch(0.64 0.19 22);
+  --critical-foreground: oklch(0.98 0.01 22);
+  --destructive: oklch(0.64 0.19 22);
+  --destructive-foreground: oklch(0.98 0.01 22);
+  --warning: oklch(0.76 0.13 68);
+  --warning-foreground: oklch(0.16 0.03 68);
+  --positive: oklch(0.72 0.14 155);
+  --positive-foreground: oklch(0.14 0.04 155);
+
+  --border: oklch(1 0 0 / 9%);
+  --border-strong: oklch(1 0 0 / 16%);
+  --hairline: oklch(1 0 0 / 7%);
+  --input: oklch(1 0 0 / 11%);
+  --ring: oklch(0.72 0.145 200 / 0.65);
+
+  --sidebar: oklch(0.132 0.015 247);
+  --sidebar-foreground: oklch(0.82 0.014 248);
+  --sidebar-primary: oklch(0.72 0.145 200);
+  --sidebar-primary-foreground: oklch(0.13 0.02 200);
+  --sidebar-accent: oklch(0.198 0.02 245);
+  --sidebar-accent-foreground: oklch(0.94 0.008 248);
+  --sidebar-border: oklch(1 0 0 / 9%);
+  --sidebar-ring: oklch(0.72 0.145 200 / 0.65);
+
+  --gradient-intel: linear-gradient(135deg, var(--primary), var(--intel));
+  --gradient-clay: linear-gradient(
+    155deg,
+    oklch(1 0 0 / 0.06) 0%,
+    oklch(1 0 0 / 0.015) 42%,
+    oklch(0 0 0 / 0.14) 100%
+  );
+  --gradient-panel: var(--gradient-clay);
+  --grid-line: oklch(1 0 0 / 0.055);
+}
+
+.dark {
+  color-scheme: dark;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    color-scheme: dark;
+  }
+
+  body {
+    background-color: var(--color-background);
+    background-image:
+      radial-gradient(
+        55% 42% at 8% -8%,
+        oklch(0.72 0.145 200 / 0.14),
+        transparent 72%
+      ),
+      radial-gradient(
+        48% 38% at 94% 2%,
+        oklch(0.62 0.14 278 / 0.11),
+        transparent 72%
+      ),
+      radial-gradient(
+        42% 40% at 55% 108%,
+        oklch(0.72 0.14 155 / 0.06),
+        transparent 72%
+      );
+    background-attachment: fixed;
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings:
+      "cv02" 1,
+      "cv03" 1,
+      "cv04" 1;
+  }
+
+  ::selection {
+    background: var(--primary-glow);
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    letter-spacing: -0.02em;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border-strong);
+    border-radius: 999px;
+    border: 3px solid transparent;
+    background-clip: content-box;
+  }
+}
+
+/* ---------- Utilities ---------- */
+
+@utility mono {
+  font-family: var(--font-mono);
+  font-variant-ligatures: none;
+  letter-spacing: -0.01em;
+}
+
+/* Base clay panel — soft 3D surface with highlight from top-left. */
+@utility panel {
+  background-color: var(--surface);
+  background-image: var(--gradient-clay);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-clay);
+}
+
+@utility panel-elevated {
+  background-color: var(--elevated);
+  background-image: var(--gradient-clay);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-clay-lift);
+}
+
+@utility clay {
+  background-color: var(--surface);
+  background-image: var(--gradient-clay);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-clay);
+}
+
+@utility clay-lift {
+  transition:
+    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.25s ease;
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-clay-lift);
+    border-color: var(--border-strong);
+  }
+  &:active {
+    transform: translateY(-1px) scale(0.995);
+  }
+}
+
+/* Inset / pressed clay well — for inputs, tracks, code blocks. */
+@utility clay-inset {
+  background-color: color-mix(in oklab, var(--background) 88%, black);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow:
+    0 2px 10px 0 oklch(0 0 0 / 0.5) inset,
+    0 -1px 0 0 oklch(1 0 0 / 0.035) inset;
+}
+
+@utility clay-pill {
+  background-color: var(--elevated);
+  background-image: var(--gradient-clay);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  box-shadow: var(--shadow-clay);
+}
+
+@utility clay-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-lg);
+  background-image: var(--gradient-clay);
+  background-color: var(--elevated);
+  border: 1px solid var(--border-strong);
+  box-shadow:
+    0 8px 18px -10px oklch(0 0 0 / 0.8),
+    0 1px 0 0 oklch(1 0 0 / 0.07) inset;
+}
+
+@utility text-gradient-intel {
+  background: var(--gradient-intel);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility canvas-grid {
+  background-color: var(--workspace);
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+@utility ambient-glow {
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -30% -10% auto -10%;
+    height: 60%;
+    background: radial-gradient(
+      60% 60% at 50% 0%,
+      var(--primary-glow),
+      transparent 70%
+    );
+    opacity: 0.2;
+    pointer-events: none;
+  }
+}
+
+@utility label-caps {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+
+@utility shimmer-line {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    oklch(1 0 0 / 0.08),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: clay-shimmer 1.6s linear infinite;
+}
+
+@keyframes clay-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes ticker {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-33.333%);
+  }
+}
+
+@keyframes scanline {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.9;
+  }
+  80% {
+    opacity: 0.7;
+  }
+  100% {
+    transform: translateY(100vh);
+    opacity: 0;
+  }
+}
+
+@keyframes clay-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@utility clay-float {
+  animation: clay-float 6s ease-in-out infinite;
+}
+
+@keyframes clay-pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 var(--primary-glow);
+  }
+  70% {
+    box-shadow: 0 0 0 10px oklch(0 0 0 / 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 oklch(0 0 0 / 0);
+  }
+}
+
+@utility pulse-ring {
+  animation: clay-pulse-ring 2.2s ease-out infinite;
+}
+
+/* ---------- Landing page (cinematic) design tokens ---------- */
+
+:root {
+  --lp-bg: #080a0f;
+  --lp-bg-2: #0b0e15;
+  --lp-surface: #10141c;
+  --lp-elevated: #161b26;
+  --lp-text: #eef2f8;
+  --lp-text-2: #9aa4b8;
+  --lp-muted: #5c667a;
+  --lp-accent: #38bdf8;
+  --lp-accent-2: #818cf8;
+  --lp-signal: #22d3ee;
+  --lp-verified: #34d399;
+  --lp-warning: #fbbf24;
+  --lp-critical: #f87171;
+  --lp-line: rgb(255 255 255 / 0.09);
+  --lp-line-strong: rgb(255 255 255 / 0.17);
+}
+
+@theme inline {
+  --color-lp-bg: var(--lp-bg);
+  --color-lp-bg-2: var(--lp-bg-2);
+  --color-lp-surface: var(--lp-surface);
+  --color-lp-elevated: var(--lp-elevated);
+  --color-lp-text: var(--lp-text);
+  --color-lp-text-2: var(--lp-text-2);
+  --color-lp-muted: var(--lp-muted);
+  --color-lp-accent: var(--lp-accent);
+  --color-lp-accent-2: var(--lp-accent-2);
+  --color-lp-signal: var(--lp-signal);
+  --color-lp-verified: var(--lp-verified);
+  --color-lp-warning: var(--lp-warning);
+  --color-lp-critical: var(--lp-critical);
+  --color-lp-line: var(--lp-line);
+  --color-lp-line-strong: var(--lp-line-strong);
+}
+
+/* Hairline technical frame — used instead of rounded cards on the landing page. */
+@utility lp-rule {
+  border-top: 1px solid var(--lp-line);
+}
+
+@utility lp-frame {
+  border: 1px solid var(--lp-line);
+  background: linear-gradient(
+    180deg,
+    rgb(255 255 255 / 0.028),
+    rgb(255 255 255 / 0)
+  );
+}
+
+@utility lp-display {
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  line-height: 0.94;
+  text-transform: uppercase;
+}
+
+@utility lp-meta {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--lp-muted);
+}
+
+@utility lp-scanline {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgb(255 255 255 / 0.022) 0px,
+    rgb(255 255 255 / 0.022) 1px,
+    transparent 1px,
+    transparent 4px
+  );
+}
