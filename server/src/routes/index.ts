@@ -1,0 +1,36 @@
+import { Router } from "express";
+import { aiRouter } from "./ai.routes";
+import { alertRouter } from "./alert.routes";
+import { authRouter } from "./auth.routes";
+import { blockchainRouter } from "./blockchain.routes";
+import { complaintRouter } from "./complaint.routes";
+import { caseRouter } from "./case.routes";
+import { dashboardRouter } from "./dashboard.routes";
+import { evidenceRouter } from "./evidence.routes";
+import { findingRouter } from "./finding.routes";
+import { healthRouter } from "./health.routes";
+import { intakeRouter } from "./intake.routes";
+import { intelligenceRouter } from "./intelligence.routes";
+import { investigationRouter } from "./investigation.routes";
+import { reportRouter } from "./report.routes";
+import { userRouter } from "./user.routes";
+import { v1Router } from "./v1.routes";
+
+export const apiRouter = Router();
+
+apiRouter.use("/health", healthRouter);
+apiRouter.use("/auth", authRouter);
+apiRouter.use("/users", userRouter);
+apiRouter.use("/dashboard", dashboardRouter);
+apiRouter.use("/intake", intakeRouter);
+apiRouter.use("/complaints", complaintRouter);
+apiRouter.use("/alerts", alertRouter);
+apiRouter.use("/cases", caseRouter);
+apiRouter.use("/investigations", investigationRouter);
+apiRouter.use("/intelligence", intelligenceRouter);
+apiRouter.use("/blockchain", blockchainRouter);
+apiRouter.use("/findings", findingRouter);
+apiRouter.use("/evidence", evidenceRouter);
+apiRouter.use("/reports", reportRouter);
+apiRouter.use("/ai", aiRouter);
+apiRouter.use("/v1", v1Router);
