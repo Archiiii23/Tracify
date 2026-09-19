@@ -1,0 +1,40 @@
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    # The database is only reachable from the API container, never the host.
+    expose:
+      - "27017"
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      mongo:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      MONGODB_URI: mongodb://mongo:27017/tracify
+      # Supply these from the host environment or a secrets manager.
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be set}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
+      CLIENT_URL: ${CLIENT_URL:?CLIENT_URL must be set}
+      # Optional: omit to run on the deterministic synthetic chain provider.
+      GRAPHSENSE_API_URL: ${GRAPHSENSE_API_URL:-}
+      GRAPHSENSE_API_KEY: ${GRAPHSENSE_API_KEY:-}
+      GRAPHSENSE_TIMEOUT_MS: ${GRAPHSENSE_TIMEOUT_MS:-12000}
+      INTAKE_API_KEYS: ${INTAKE_API_KEYS:-}
+
+    ports:
+      - "5000:5000"
+
+volumes:
+  mongo-data:

@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: vasptrace-server
+    runtime: docker
+    dockerfilePath: Dockerfile
+    dockerContext: .
+    rootDir: server
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: CLIENT_URL
+        sync: false
