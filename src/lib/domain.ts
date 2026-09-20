@@ -176,11 +176,42 @@ export interface EvidenceRecord {
   mime_type: string | null;
   file_size: number | null;
   checksum_sha256: string | null;
+  /* Amazon Textract enrichment (populated after upload) */
+  extraction_status: EvidenceExtractionStatus;
+  extracted_text: string | null;
+  extracted_entities: ExtractedEvidenceEntities;
+  extracted_at: string | null;
+  extraction_error: string | null;
+}
+
+export type EvidenceExtractionStatus =
+  | "pending"
+  | "skipped"
+  | "extracting"
+  | "extracted"
+  | "failed";
+
+export interface ExtractedEvidenceEntities {
+  walletAddresses?: string[];
+  txHashes?: string[];
+  amounts?: string[];
+  dates?: string[];
 }
 
 /** True when this evidence row is backed by a real file in Amazon S3. */
 export function isS3BackedEvidence(e: EvidenceRecord): boolean {
   return Boolean(e.s3_key && e.s3_bucket);
+}
+
+/** Total count of structured entities Textract pulled from this evidence. */
+export function extractedEntityCount(e: EvidenceRecord): number {
+  const ex = e.extracted_entities ?? {};
+  return (
+    (ex.walletAddresses?.length ?? 0) +
+    (ex.txHashes?.length        ?? 0) +
+    (ex.amounts?.length         ?? 0) +
+    (ex.dates?.length           ?? 0)
+  );
 }
 
 export interface ReportRecord {

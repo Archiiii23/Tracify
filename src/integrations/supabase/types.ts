@@ -69,6 +69,11 @@ export type Database = {
           description: string | null
           evidence_ref: string
           evidence_type: string
+          extracted_at: string | null
+          extracted_entities: Json
+          extracted_text: string | null
+          extraction_error: string | null
+          extraction_status: string
           file_size: number | null
           finding_id: string | null
           id: string
@@ -91,6 +96,11 @@ export type Database = {
           description?: string | null
           evidence_ref: string
           evidence_type?: string
+          extracted_at?: string | null
+          extracted_entities?: Json
+          extracted_text?: string | null
+          extraction_error?: string | null
+          extraction_status?: string
           file_size?: number | null
           finding_id?: string | null
           id?: string
@@ -113,6 +123,11 @@ export type Database = {
           description?: string | null
           evidence_ref?: string
           evidence_type?: string
+          extracted_at?: string | null
+          extracted_entities?: Json
+          extracted_text?: string | null
+          extraction_error?: string | null
+          extraction_status?: string
           file_size?: number | null
           finding_id?: string | null
           id?: string

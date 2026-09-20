@@ -38,6 +38,7 @@ import {
 import { casesQuery, createEvidence } from "@/lib/api/queries";
 import { EVIDENCE_TYPES } from "@/lib/domain";
 import { formatBytes, uploadEvidenceToS3 } from "@/lib/api/s3";
+import { extractEvidence } from "@/lib/api/textract";
 
 const MAX_FILE_MB = 25;
 
@@ -123,6 +124,28 @@ export function EvidenceUploadDialog({ presetCaseId, trigger }: Props) {
       toast.success(`${created.evidence_ref} sealed in Amazon S3`);
       setOpen(false);
       reset();
+
+      // Fire-and-forget Textract extraction. Runs in the background so the
+      // upload UX stays snappy; the evidence card will re-render with the
+      // extracted entities on the next refetch.
+      void extractEvidence(created.id)
+        .then((res) => {
+          if (res.status === "extracted") {
+            const count =
+              (res.entities.walletAddresses?.length ?? 0) +
+              (res.entities.txHashes?.length ?? 0);
+            if (count > 0) {
+              toast.success(
+                `Textract found ${count} on-chain identifier${count === 1 ? "" : "s"} in ${created.evidence_ref}`,
+              );
+            }
+            void queryClient.invalidateQueries({ queryKey: ["evidence"] });
+          }
+        })
+        .catch((err) => {
+          // extraction failure shouldn't block the upload success flow
+          console.warn("[textract]", err);
+        });
     },
     onError: (err: Error) => {
       setProgress(0);

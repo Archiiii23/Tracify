@@ -22,7 +22,11 @@ import {
   StatTile,
 } from "@/components/vt/states";
 import { casesQuery, evidenceQuery } from "@/lib/api/queries";
-import { EVIDENCE_TYPES, isS3BackedEvidence } from "@/lib/domain";
+import {
+  EVIDENCE_TYPES,
+  extractedEntityCount,
+  isS3BackedEvidence,
+} from "@/lib/domain";
 import { formatBytes, getPresignedDownloadUrl } from "@/lib/api/s3";
 
 export const Route = createFileRoute("/_authenticated/evidence")({
@@ -143,6 +147,21 @@ function EvidencePage() {
                       </Chip>
                     </span>
                   ) : null}
+                  {s3Backed && e.extraction_status === "extracting" ? (
+                    <Chip tone="info" dot>Textract extracting…</Chip>
+                  ) : null}
+                  {s3Backed && e.extraction_status === "extracted" && extractedEntityCount(e) > 0 ? (
+                    <span title="Extracted by Amazon Textract">
+                      <Chip tone="info" dot>
+                        Textract · {extractedEntityCount(e)} entit{extractedEntityCount(e) === 1 ? "y" : "ies"}
+                      </Chip>
+                    </span>
+                  ) : null}
+                  {s3Backed && e.extraction_status === "failed" ? (
+                    <span title={e.extraction_error ?? ""}>
+                      <Chip tone="warning" dot>Textract failed</Chip>
+                    </span>
+                  ) : null}
                   {caseRef(e.case_id) ? (
                     <Link
                       to="/cases/$caseId"
@@ -192,6 +211,56 @@ function EvidencePage() {
                     </>
                   ) : null}
                 </dl>
+                {s3Backed && e.extraction_status === "extracted" && extractedEntityCount(e) > 0 ? (
+                  <div className="mt-3 space-y-1.5 rounded-lg border border-primary/25 bg-primary/5 p-3">
+                    <div className="mono text-[10px] uppercase tracking-wider text-primary">
+                      Extracted by Amazon Textract
+                    </div>
+                    {e.extracted_entities.walletAddresses?.length ? (
+                      <div className="flex flex-wrap items-baseline gap-1.5">
+                        <span className="text-[11px] text-muted-foreground">Wallets:</span>
+                        {e.extracted_entities.walletAddresses.slice(0, 4).map((w) => (
+                          <span
+                            key={w}
+                            className="mono text-[10px] rounded border border-border bg-secondary px-1.5 py-0.5"
+                            title={w}
+                          >
+                            {w.slice(0, 6)}…{w.slice(-4)}
+                          </span>
+                        ))}
+                        {e.extracted_entities.walletAddresses.length > 4 ? (
+                          <span className="text-[10px] text-muted-foreground">
+                            +{e.extracted_entities.walletAddresses.length - 4} more
+                          </span>
+                        ) : null}
+                      </div>
+                    ) : null}
+                    {e.extracted_entities.txHashes?.length ? (
+                      <div className="flex flex-wrap items-baseline gap-1.5">
+                        <span className="text-[11px] text-muted-foreground">Tx hashes:</span>
+                        {e.extracted_entities.txHashes.slice(0, 3).map((tx) => (
+                          <span
+                            key={tx}
+                            className="mono text-[10px] rounded border border-border bg-secondary px-1.5 py-0.5"
+                            title={tx}
+                          >
+                            {tx.slice(0, 8)}…
+                          </span>
+                        ))}
+                      </div>
+                    ) : null}
+                    {e.extracted_entities.amounts?.length ? (
+                      <div className="flex flex-wrap items-baseline gap-1.5">
+                        <span className="text-[11px] text-muted-foreground">Amounts:</span>
+                        {e.extracted_entities.amounts.slice(0, 3).map((a) => (
+                          <span key={a} className="mono text-[10px] text-foreground">
+                            {a}
+                          </span>
+                        ))}
+                      </div>
+                    ) : null}
+                  </div>
+                ) : null}
                 {s3Backed ? (
                   <div className="mt-3 flex justify-end">
                     <Button
