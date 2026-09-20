@@ -64,14 +64,20 @@ export type Database = {
           added_by: string
           attachment_url: string | null
           case_id: string | null
+          checksum_sha256: string | null
           created_at: string
           description: string | null
           evidence_ref: string
           evidence_type: string
+          file_size: number | null
           finding_id: string | null
           id: string
           investigation_id: string | null
           metadata: Json
+          mime_type: string | null
+          original_name: string | null
+          s3_bucket: string | null
+          s3_key: string | null
           source: string | null
           title: string
           updated_at: string
@@ -80,14 +86,20 @@ export type Database = {
           added_by?: string
           attachment_url?: string | null
           case_id?: string | null
+          checksum_sha256?: string | null
           created_at?: string
           description?: string | null
           evidence_ref: string
           evidence_type?: string
+          file_size?: number | null
           finding_id?: string | null
           id?: string
           investigation_id?: string | null
           metadata?: Json
+          mime_type?: string | null
+          original_name?: string | null
+          s3_bucket?: string | null
+          s3_key?: string | null
           source?: string | null
           title: string
           updated_at?: string
@@ -96,14 +108,20 @@ export type Database = {
           added_by?: string
           attachment_url?: string | null
           case_id?: string | null
+          checksum_sha256?: string | null
           created_at?: string
           description?: string | null
           evidence_ref?: string
           evidence_type?: string
+          file_size?: number | null
           finding_id?: string | null
           id?: string
           investigation_id?: string | null
           metadata?: Json
+          mime_type?: string | null
+          original_name?: string | null
+          s3_bucket?: string | null
+          s3_key?: string | null
           source?: string | null
           title?: string
           updated_at?: string

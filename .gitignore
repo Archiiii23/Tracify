@@ -39,3 +39,10 @@ dist-ssr
 .env.local
 .env.*.local
 
+# Local secret scratch files (never commit)
+awskey*
+*.aws-keys
+*secret*.txt
+*credentials*.txt
+docs/awskey.txt
+

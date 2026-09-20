@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Vault } from "lucide-react";
+import { Download, Vault } from "lucide-react";
+import { toast } from "sonner";
 
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -11,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Chip, Mono } from "@/components/vt/badges";
+import { EvidenceUploadDialog } from "@/components/vt/EvidenceUploadDialog";
 import {
   EmptyState,
   ErrorState,
@@ -19,7 +22,8 @@ import {
   StatTile,
 } from "@/components/vt/states";
 import { casesQuery, evidenceQuery } from "@/lib/api/queries";
-import { EVIDENCE_TYPES } from "@/lib/domain";
+import { EVIDENCE_TYPES, isS3BackedEvidence } from "@/lib/domain";
+import { formatBytes, getPresignedDownloadUrl } from "@/lib/api/s3";
 
 export const Route = createFileRoute("/_authenticated/evidence")({
   head: () => ({
@@ -60,19 +64,22 @@ function EvidencePage() {
         title="Evidence"
         description="Every artefact is time-stamped and attributed to the investigator who pinned it, so conclusions stay defensible outside this tool."
         actions={
-          <Select value={type} onValueChange={setType}>
-            <SelectTrigger className="w-[190px]">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">All evidence types</SelectItem>
-              {EVIDENCE_TYPES.map((t) => (
-                <SelectItem key={t} value={t}>
-                  {t.replace(/_/g, " ")}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="flex items-center gap-2">
+            <Select value={type} onValueChange={setType}>
+              <SelectTrigger className="w-[190px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All evidence types</SelectItem>
+                {EVIDENCE_TYPES.map((t) => (
+                  <SelectItem key={t} value={t}>
+                    {t.replace(/_/g, " ")}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <EvidenceUploadDialog />
+          </div>
         }
       />
 
@@ -119,41 +126,94 @@ function EvidencePage() {
         />
       ) : (
         <div className="grid gap-3 lg:grid-cols-2">
-          {filtered.map((e) => (
-            <article key={e.id} className="clay clay-lift rounded-2xl p-5 shadow-clay transition-all hover:border-border-strong">
-              <div className="flex flex-wrap items-center gap-2">
-                <Mono className="text-muted-foreground">{e.evidence_ref}</Mono>
-                <Chip tone="intel">{e.evidence_type.replace(/_/g, " ")}</Chip>
-                {caseRef(e.case_id) ? (
-                  <Link
-                    to="/cases/$caseId"
-                    params={{ caseId: e.case_id! }}
-                    className="mono text-[11px] text-primary hover:underline"
-                  >
-                    {caseRef(e.case_id)}
-                  </Link>
-                ) : null}
-              </div>
-              <h2 className="mt-2.5 text-sm font-semibold">{e.title}</h2>
-              {e.description ? (
-                <p className="mt-1.5 text-sm text-muted-foreground">
-                  {e.description}
-                </p>
-              ) : null}
-              <dl className="mono mt-3 space-y-1 border-t border-border pt-3 text-[11px] text-muted-foreground">
-                <div className="flex justify-between gap-3">
-                  <dt>captured</dt>
-                  <dd>{new Date(e.created_at).toLocaleString()}</dd>
+          {filtered.map((e) => {
+            const s3Backed = isS3BackedEvidence(e);
+            return (
+              <article
+                key={e.id}
+                className="clay clay-lift rounded-2xl p-5 shadow-clay transition-all hover:border-border-strong"
+              >
+                <div className="flex flex-wrap items-center gap-2">
+                  <Mono className="text-muted-foreground">{e.evidence_ref}</Mono>
+                  <Chip tone="intel">{e.evidence_type.replace(/_/g, " ")}</Chip>
+                  {s3Backed ? (
+                    <span title={`s3://${e.s3_bucket}/${e.s3_key}`}>
+                      <Chip tone="positive" dot>
+                        Amazon S3
+                      </Chip>
+                    </span>
+                  ) : null}
+                  {caseRef(e.case_id) ? (
+                    <Link
+                      to="/cases/$caseId"
+                      params={{ caseId: e.case_id! }}
+                      className="mono text-[11px] text-primary hover:underline"
+                    >
+                      {caseRef(e.case_id)}
+                    </Link>
+                  ) : null}
                 </div>
-                {e.source ? (
+                <h2 className="mt-2.5 text-sm font-semibold">{e.title}</h2>
+                {e.description ? (
+                  <p className="mt-1.5 text-sm text-muted-foreground">
+                    {e.description}
+                  </p>
+                ) : null}
+                <dl className="mono mt-3 space-y-1 border-t border-border pt-3 text-[11px] text-muted-foreground">
                   <div className="flex justify-between gap-3">
-                    <dt>source</dt>
-                    <dd className="truncate">{e.source}</dd>
+                    <dt>captured</dt>
+                    <dd>{new Date(e.created_at).toLocaleString()}</dd>
+                  </div>
+                  {e.source ? (
+                    <div className="flex justify-between gap-3">
+                      <dt>source</dt>
+                      <dd className="truncate">{e.source}</dd>
+                    </div>
+                  ) : null}
+                  {s3Backed ? (
+                    <>
+                      <div className="flex justify-between gap-3">
+                        <dt>file</dt>
+                        <dd className="truncate">
+                          {e.original_name}
+                          {typeof e.file_size === "number"
+                            ? ` · ${formatBytes(e.file_size)}`
+                            : ""}
+                        </dd>
+                      </div>
+                      {e.checksum_sha256 ? (
+                        <div className="flex justify-between gap-3">
+                          <dt>sha-256</dt>
+                          <dd className="truncate" title={e.checksum_sha256}>
+                            {e.checksum_sha256.slice(0, 12)}…
+                          </dd>
+                        </div>
+                      ) : null}
+                    </>
+                  ) : null}
+                </dl>
+                {s3Backed ? (
+                  <div className="mt-3 flex justify-end">
+                    <Button
+                      size="sm"
+                      variant="secondary"
+                      onClick={async () => {
+                        try {
+                          const { url } = await getPresignedDownloadUrl(e.s3_key!);
+                          window.open(url, "_blank", "noopener,noreferrer");
+                        } catch (err) {
+                          toast.error((err as Error).message);
+                        }
+                      }}
+                    >
+                      <Download className="mr-2 size-3.5" />
+                      Open from S3
+                    </Button>
                   </div>
                 ) : null}
-              </dl>
-            </article>
-          ))}
+              </article>
+            );
+          })}
         </div>
       )}
     </div>

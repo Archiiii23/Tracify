@@ -169,6 +169,18 @@ export interface EvidenceRecord {
   added_by: string | null;
   created_at: string;
   updated_at: string;
+  /* Amazon S3 evidence-vault fields (nullable for legacy metadata-only rows) */
+  s3_bucket: string | null;
+  s3_key: string | null;
+  original_name: string | null;
+  mime_type: string | null;
+  file_size: number | null;
+  checksum_sha256: string | null;
+}
+
+/** True when this evidence row is backed by a real file in Amazon S3. */
+export function isS3BackedEvidence(e: EvidenceRecord): boolean {
+  return Boolean(e.s3_key && e.s3_bucket);
 }
 
 export interface ReportRecord {

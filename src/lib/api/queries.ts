@@ -301,11 +301,19 @@ export const evidenceQuery = (filters?: {
 export interface EvidenceInput {
   case_id?: string | null | undefined;
   investigation_id?: string | null | undefined;
+  finding_id?: string | null | undefined;
   title: string;
   evidence_type: string;
   description?: string | undefined;
   source?: string | undefined;
   metadata?: Record<string, unknown> | undefined;
+  /* S3 evidence-vault fields (populated after uploadEvidenceToS3) */
+  s3_bucket?: string | undefined;
+  s3_key?: string | undefined;
+  original_name?: string | undefined;
+  mime_type?: string | undefined;
+  file_size?: number | undefined;
+  checksum_sha256?: string | undefined;
 }
 
 export async function createEvidence(input: EvidenceInput) {
@@ -324,6 +332,11 @@ export async function createEvidence(input: EvidenceInput) {
       .select()
       .single()) as never,
   );
+}
+
+export async function deleteEvidence(id: string) {
+  const { error } = await supabase.from("evidence").delete().eq("id", id);
+  if (error) throw new Error(error.message);
 }
 
 /* ---------------- Reports ---------------- */
