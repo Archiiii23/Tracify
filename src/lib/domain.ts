@@ -152,6 +152,40 @@ export interface FindingRecord {
   created_by: string | null;
   created_at: string;
   updated_at: string;
+  /* Amazon Comprehend NLP enrichment (nullable for un-analysed findings) */
+  nlp_status: FindingNlpStatus;
+  nlp_entities: NlpEntity[];
+  nlp_pii: NlpPiiEntity[];
+  nlp_sentiment: NlpSentiment | null;
+  nlp_sentiment_scores: NlpSentimentScores | null;
+  nlp_language: string | null;
+  nlp_analysed_at: string | null;
+  nlp_error: string | null;
+}
+
+export type FindingNlpStatus = "pending" | "analysing" | "analysed" | "failed";
+export type NlpSentiment = "POSITIVE" | "NEGATIVE" | "NEUTRAL" | "MIXED";
+
+export interface NlpEntity {
+  type: string;
+  text: string;
+  score: number;
+  begin: number;
+  end: number;
+}
+
+export interface NlpPiiEntity {
+  type: string;
+  score: number;
+  begin: number;
+  end: number;
+}
+
+export interface NlpSentimentScores {
+  Positive: number;
+  Negative: number;
+  Neutral: number;
+  Mixed: number;
 }
 
 export interface EvidenceRecord {

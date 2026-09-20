@@ -1,0 +1,6 @@
+{
+  "imports": {
+    "aws4fetch": "https://esm.sh/aws4fetch@1.0.20",
+    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.45.4"
+  }
+}

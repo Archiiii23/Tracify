@@ -176,6 +176,14 @@ export type Database = {
           finding_type: string | null
           id: string
           investigation_id: string | null
+          nlp_analysed_at: string | null
+          nlp_entities: Json
+          nlp_error: string | null
+          nlp_language: string | null
+          nlp_pii: Json
+          nlp_sentiment: string | null
+          nlp_sentiment_scores: Json | null
+          nlp_status: string
           related: Json
           severity: string
           status: string
@@ -192,6 +200,14 @@ export type Database = {
           finding_type?: string | null
           id?: string
           investigation_id?: string | null
+          nlp_analysed_at?: string | null
+          nlp_entities?: Json
+          nlp_error?: string | null
+          nlp_language?: string | null
+          nlp_pii?: Json
+          nlp_sentiment?: string | null
+          nlp_sentiment_scores?: Json | null
+          nlp_status?: string
           related?: Json
           severity?: string
           status?: string
@@ -208,6 +224,14 @@ export type Database = {
           finding_type?: string | null
           id?: string
           investigation_id?: string | null
+          nlp_analysed_at?: string | null
+          nlp_entities?: Json
+          nlp_error?: string | null
+          nlp_language?: string | null
+          nlp_pii?: Json
+          nlp_sentiment?: string | null
+          nlp_sentiment_scores?: Json | null
+          nlp_status?: string
           related?: Json
           severity?: string
           status?: string
